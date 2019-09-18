@@ -3,7 +3,6 @@
 import flask
 
 import app.domain.articles.crud_service as crud
-import app.domain.articles.find_service as find
 import app.domain.articles.rest_validations as restValidator
 import app.utils.errors as errors
 import app.utils.json_serializer as json
@@ -68,7 +67,7 @@ def init(app):
 
             params = json.body_to_dic(flask.request.data)
 
-            params = restValidator.validateEditLevelParams(params)
+            params = restValidator.validateCreateLevelParams(params)
 
             result = crud.createLevel(params)
 
@@ -89,8 +88,8 @@ def init(app):
         except Exception as err:
             return errors.handleError(err)
 
-    @app.route('/v1/rewards/deleteLevel', methods=['POST'])
-    def deleteLevel():
+    @app.route('/v1/rewards/edit-level', methods=['POST'])
+    def editLevel():
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
 
