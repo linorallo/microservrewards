@@ -1,0 +1,3 @@
+#!/bin/bash 
+cd order_java
+gradle run

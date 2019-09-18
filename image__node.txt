@@ -1,0 +1,3 @@
+#!/bin/bash 
+cd image_node
+npm start
