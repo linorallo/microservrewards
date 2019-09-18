@@ -1,0 +1,17 @@
+#!/bin/bash 
+echo "Iniciando mongodb..."
+sudo mongod.txt
+echo "Iniciar RabbitMQ:"
+sudo rabbitmq-server.txt
+echo "Iniciando api_cliente_react..."
+api_client_react.txt
+echo "Iniciando auth_node..."
+auth_node.txt
+echo "Iniciando cart_node..."
+cart_node.txt
+echo "Iniciando catalog_python..."
+catalog_python.txt
+echo "Iniciando image_node..."
+image_node.txt
+echo "Iniciando order_java..."
+order_java.txt

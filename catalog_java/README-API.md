@@ -55,6 +55,7 @@ Header Autorización
 Authorization=bearer {token}
 ```
 
+
 ### Success Response
 
 Respuesta
@@ -113,6 +114,7 @@ HTTP/1.1 500 Server Error
 <p>Busca artículos por nombre o descripción</p>
 
 	GET /v1/articles/search/:criteria
+
 
 
 
@@ -195,6 +197,7 @@ Header Autorización
 Authorization=bearer {token}
 ```
 
+
 ### Success Response
 
 Respuesta
@@ -264,6 +267,7 @@ Header Autorización
 Authorization=bearer {token}
 ```
 
+
 ### Success Response
 
 200 Respuesta
@@ -313,6 +317,7 @@ HTTP/1.1 500 Server Error
 
 
 	GET /v1/articles/:articleId
+
 
 
 
@@ -376,6 +381,7 @@ HTTP/1.1 500 Server Error
 
 
 
+
 ### Success Response
 
 Mensaje
@@ -423,6 +429,7 @@ Mensaje
 
 
 
+
 ## <a name='validación-de-artículos'></a> Validación de Artículos
 [Back to top](#top)
 
@@ -449,6 +456,7 @@ Mensaje
 
 
 
+
 ## <a name='logout'></a> Logout
 [Back to top](#top)
 
@@ -471,6 +479,7 @@ Mensaje
 
 
 
+
 # <a name='rabbitmq_post'></a> RabbitMQ_POST
 
 ## <a name='validación-de-artículos'></a> Validación de Artículos
@@ -479,6 +488,7 @@ Mensaje
 <p>Enviá de mensajes article-exist desde cart. Valida artículos</p>
 
 	DIRECT cart/article-exist
+
 
 
 

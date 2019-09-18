@@ -2,7 +2,7 @@
 
 Este microservicio asigna puntos al usuario basado en las compras confirmadas del mismo.
 
-Cada punto que es asignado se corresponde a un valor preestablecido. Por cada orden de compra confirmada se calculan los puntos y se determinan los puntos ha asignar al usuario.
+Cada punto que es asignado se corresponde a un valor preestablecido. Por cada orden de compra confirmada se calculan los puntos y se determinan los puntos a asignar al usuario.
 
 Los puntos obtenidos por el usuario prodrán ser intercambiados por futuros beneficios para el.
 
