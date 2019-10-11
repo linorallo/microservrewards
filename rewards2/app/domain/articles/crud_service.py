@@ -32,8 +32,8 @@ def getScore(userId):
 
     """
     try:
-        result = collection.find({"_id":bson.ObjectId(userId)})
-        "result = db.scores.find_one({""_id"": bson.ObjectId(userId)})"
+        '"_id": bson.ObjectId(userId)'
+        result = db.scores.find_one({})
         if (not result):
             raise error.InvalidArgument("_id", "Document does not exists")
         return result
@@ -213,7 +213,10 @@ def getLevels():
     @apiUse Errors
 
     """
-    results=db.levels.find({})
+    results=db.levels.count()
+    results=db.levels.find_one({}) 
+    'Esto funciona pero hay q lograr traer todas las entradas como un array'
+    
     if(not results):
         raise error("el find no funciona")
     return results
