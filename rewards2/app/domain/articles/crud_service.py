@@ -32,8 +32,8 @@ def getScore(userId):
 
     """
     try:
-        '"_id": bson.ObjectId(userId)'
-        result = db.scores.find_one({})
+        ''
+        result = db.scores.find_one({"_id": bson.ObjectId(userId)})
         if (not result):
             raise error.InvalidArgument("_id", "Document does not exists")
         return result
