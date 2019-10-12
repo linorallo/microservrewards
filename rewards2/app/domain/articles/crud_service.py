@@ -2,10 +2,11 @@
 
 import datetime
 import pymongo
-
+import json
 import app.utils.errors as error
 import app.utils.mongo as db
 import bson.objectid as bson
+import logging
 
 def getScore(userId):
     """
@@ -32,15 +33,17 @@ def getScore(userId):
 
     """
     try:
-        ''
+        
         result = db.scores.find_one({"_id": bson.ObjectId(userId)})
         if (not result):
             raise error.InvalidArgument("_id", "Document does not exists")
         return result
+    
     except Exception:
         raise error.InvalidArgument("_id", "Invalid object id")
 
-def manageScore(userID, params):
+"def manageScore(userID, params):"
+def manageScore(userID, params  ):
     """
     Gestionar puntaje. \n
     userId: string ObjectId\n
@@ -63,10 +66,22 @@ def manageScore(userID, params):
         }
 
     @apiUse Errors
-
+    
     """
-    params["_id"] = userId
-    return _addOrManageScore(params)
+    try:
+        rawresults = db.scores.find_one({"_id":bson.ObjectId(userID)})
+        "db.scores.find_one_and_update({'_id':bson.ObjectId(userID)})"
+        "result=json.loads(rawresults)"
+        if(params["action"]=="SUMAR"):
+            updatedValue=rawresults['score']+params['valor']
+        else:
+            if(params["action"]=="RESTAR"):
+                updatedValue=rawresults['score']-params['valor']
+        if (not rawresults):
+            raise error.InvalidArgument("_id", "Document does not exists")
+        return updatedValue
+    except Exception as err:
+        raise err
 
 def updateScoreValue(params):
     """

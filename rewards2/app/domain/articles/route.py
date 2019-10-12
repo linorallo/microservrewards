@@ -49,8 +49,9 @@ def init(app):
             params = json.body_to_dic(flask.request.data)
 
             result = crud.manageScore(userId, params)
-
-            return json.dic_to_json(result)
+            "result = crud.manageScore(userId)"
+            return result
+            "return json.dic_to_json(result)"
         except Exception as err:
             return errors.handleError(err)
 
