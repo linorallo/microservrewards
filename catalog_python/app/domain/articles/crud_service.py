@@ -64,7 +64,7 @@ def addArticle(params):
             "name": "{nombre del articulo}",
             "description": "{descripción del articulo}",
             "image": "{id de imagen}",
-            "price": {precio actual},
+            "price": {precio actual DOLAR},
             "stock": {stock actual}
         }
 
@@ -107,7 +107,7 @@ def updateArticle(articleId, params):
             "name": "{nombre del articulo}",
             "description": "{descripción del articulo}",
             "image": "{id de imagen}",
-            "price": {precio actual},
+            "price": {precio actual DOLARR},
             "stock": {stock actual}
         }
 

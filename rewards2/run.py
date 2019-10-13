@@ -1,5 +1,5 @@
 # coding=utf_8
-
+from flask import Flask
 from app.server import MainApp
 
 if __name__ == "__main__":

@@ -427,8 +427,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "./resources/www/main.js",
-    "group": "_home_lino_Documents_UTN_Arquitectura_de_Microservicios_microservrewards_order_java_resources_www_main_js",
-    "groupTitle": "_home_lino_Documents_UTN_Arquitectura_de_Microservicios_microservrewards_order_java_resources_www_main_js",
+    "group": "_home_lino_UTN_ArquitecturaMicroservicios_microservrewards_order_java_resources_www_main_js",
+    "groupTitle": "_home_lino_UTN_ArquitecturaMicroservicios_microservrewards_order_java_resources_www_main_js",
     "name": ""
   },
   {
@@ -455,8 +455,8 @@ define({ "api": [
     "url": "",
     "version": "0.0.0",
     "filename": "./www/main.js",
-    "group": "_home_lino_Documents_UTN_Arquitectura_de_Microservicios_microservrewards_order_java_www_main_js",
-    "groupTitle": "_home_lino_Documents_UTN_Arquitectura_de_Microservicios_microservrewards_order_java_www_main_js",
+    "group": "_home_lino_UTN_ArquitecturaMicroservicios_microservrewards_order_java_www_main_js",
+    "groupTitle": "_home_lino_UTN_ArquitecturaMicroservicios_microservrewards_order_java_www_main_js",
     "name": ""
   }
 ] });

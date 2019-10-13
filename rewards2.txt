@@ -1,0 +1,2 @@
+cd rewards2
+python run.py
