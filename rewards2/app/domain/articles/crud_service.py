@@ -88,7 +88,7 @@ def manageScore(userID, params  ):
     except Exception as err:
         raise err
 
-def updateScoreValue(params):
+def updateValuePoint(params):
     """
     Modificar valor del puntaje. \n
     params: dict<propiedad, valor> Valor Puntaje\n
@@ -110,8 +110,14 @@ def updateScoreValue(params):
     @apiUse Errors
 
     """
-    params["_id"] = userId
-    return _addOrUpdateScoreValue(params)   
+    try:
+        pointValue=int(params['pointValue'])
+        if(pointValue<0):
+            raise error.InvalidArgument('pointValue','pointValue cannot be negative')
+        db.scores.find_one_and_update({'name':'cotizacion'},{'$set':{'pointValue':pointValue}})
+        return "Points value updated"
+    except Exception as err:
+        raise err
 
 
 def addLevel(params):

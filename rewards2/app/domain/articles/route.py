@@ -56,15 +56,15 @@ def init(app):
             return errors.handleError(err)
 
     @app.route('/v1/rewards/update-points-value', methods=['POST'])
-    def valuePoint():
+    def updateValuePoint():
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
 
             params = json.body_to_dic(flask.request.data)
 
-            result = crud.valuePoint(params)
-
-            return json.dic_to_json(result)
+            result = crud.updateValuePoint(params)
+            
+            return result
         except Exception as err:
             return errors.handleError(err)
 
