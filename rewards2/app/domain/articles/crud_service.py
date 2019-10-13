@@ -73,13 +73,18 @@ def manageScore(userID, params  ):
         "db.scores.find_one_and_update({'_id':bson.ObjectId(userID)})"
         "result=json.loads(rawresults)"
         if(params["action"]=="SUMAR"):
-            updatedValue=rawresults['score']+params['valor']
+            updatedValue=int(rawresults['score'])+int(params['valor'])
         else:
             if(params["action"]=="RESTAR"):
-                updatedValue=rawresults['score']-params['valor']
+                if(int(rawresults['score'])-int(params['valor'])<0):
+                    raise error.InvalidArgument('score', 'Value not valid')
+                updatedValue=int(rawresults['score'])-int(params['valor'])
+            else:
+                raise error.InvalidArgument('action','Action not valid')
         if (not rawresults):
             raise error.InvalidArgument("_id", "Document does not exists")
-        return updatedValue
+        db.scores.find_one_and_update({'_id':bson.ObjectId(userID)},{'$set':{'score':int(updatedValue)}})
+        return str(updatedValue)
     except Exception as err:
         raise err
 
