@@ -120,7 +120,7 @@ def updateValuePoint(params):
         raise err
 
 
-def addLevel(params):
+def createLevel(params):
     """
     Agrega un nivel.\n
     params: dict<propiedad, valor> Nivel\n
@@ -154,9 +154,14 @@ def addLevel(params):
     @apiUse Errors
 
     """
-    return _addOrCreateLevel(params)
+    try:
+        db.levels.insert_one(params)
+        name=params['levelName']
+        return db.levels.find_one({'levelName':name})
+    except Exception as err:
+        raise err
 
-def modifyLevel(params):
+def modifyLevel(levelId, params):
     """
     Mofifica un nivel.\n
     params: dict<propiedad, valor> Nivel\n
@@ -171,6 +176,7 @@ def modifyLevel(params):
 
     @apiExample {json} Body
         {
+            "levelID" :"{levelID}",
             “minValue” : “{minValue}”,
             “maxValue” : “{maxValue}”
 
@@ -189,9 +195,14 @@ def modifyLevel(params):
     @apiUse Errors
 
     """
-    return _addOrModifyLevel(params)
+    try:
+        db.levels.find_one_and_update({"_id":bson.ObjectId(levelId)},{'$set':{'levelName':params['levelName'],'minValue':params['minValue'],'maxValue':params['maxValue']}})
+        return 'Level modified succesfully'    
+    except Exception as err:
+        raise err
 
-def delLevel(levelId):
+
+def deleteLevel(levelId):
     """
     Marca un nivel como invalido.\n
     levelId: string ObjectId
@@ -211,8 +222,8 @@ def delLevel(levelId):
     @apiUse Errors
 
     """
-    level = getLevel(levelId)
-    db.levels.delete(level)
+    db.levels.delete_one({'_id':bson.ObjectId(levelId)})
+    
 
 def getLevels():
     """
@@ -246,4 +257,3 @@ def getLevels():
     if(not results):
         raise error("el find no funciona")
     return results
-

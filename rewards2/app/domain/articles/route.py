@@ -75,37 +75,33 @@ def init(app):
 
             params = json.body_to_dic(flask.request.data)
 
-            params = restValidator.validateCreateLevelParams(params)
-
             result = crud.createLevel(params)
 
             return json.dic_to_json(result)
         except Exception as err:
             return errors.handleError(err)
 
-    @app.route('/v1/rewards/delete-level', methods=['POST'])
-    def deleteLevel():
+    @app.route('/v1/rewards/levels/<levelId>/delete-level', methods=['GET'])
+    def deleteLevel(levelId):
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
 
-            params = json.body_to_dic(flask.request.data)
-
-            result = crud.deleteLevel(params)
+            result = crud.deleteLevel(levelId)
 
             return json.dic_to_json(result)
         except Exception as err:
             return errors.handleError(err)
 
-    @app.route('/v1/rewards/edit-level', methods=['POST'])
-    def editLevel():
+    @app.route('/v1/rewards/levels/<levelId>/modify-level', methods=['POST'])
+    def modifyLevel(levelId):
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
 
             params = json.body_to_dic(flask.request.data)
 
-            params = restValidator.validateEditLevelParams(params)
+            'params = restValidator.validateEditLevelParams(params)'
 
-            result = crud.deleteLevel(params)
+            result = crud.modifyLevel(levelId, params)
 
             return json.dic_to_json(result)
         except Exception as err:

@@ -163,7 +163,7 @@ define({ "api": [
     "examples": [
       {
         "title": "Body",
-        "content": "{\n    “minValue” : “{minValue}”,\n    “maxValue” : “{maxValue}”\n\n}",
+        "content": "{\n    \"levelID\" :\"{levelID}\",\n    “minValue” : “{minValue}”,\n    “maxValue” : “{maxValue}”\n\n}",
         "type": "json"
       },
       {
