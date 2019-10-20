@@ -18,7 +18,7 @@ Microservicio de Rewards
 	- [Acreditar Puntos](#acreditar-puntos)
 	
 - [RabbitMQ_POST](#rabbitmq_post)
-	- [](#)
+	- [Informar Cambio de Nivel](#informar-cambio-de-nivel)
 	
 
 
@@ -241,6 +241,7 @@ Body
 
 ```
 {
+    "levelID" :"{levelID}",
     “minValue” : “{minValue}”,
     “maxValue” : “{maxValue}”
 
@@ -328,6 +329,7 @@ Respuesta
 ```
 HTTP/1.1 200 OK
 {
+    "_id":":userId"
     “score” : “{score}”,
     “levelName” : “{levelName}” 
 }
@@ -497,9 +499,9 @@ HTTP/1.1 500 Server Error
 ## <a name='acreditar-puntos'></a> Acreditar Puntos
 [Back to top](#top)
 
-<p>Escucha de mensajes order-placed desde order. Acredita Puntos</p>
+<p>Escucha de mensajes order-payed desde order. Acredita Puntos</p>
 
-	DIRECT catalog/order-placed
+	DIRECT order/order-payed
 
 
 
@@ -509,11 +511,13 @@ Mensaje
 
 ```
 {
-      “type” : “order-placed”,
+      “type” : “order-payed",
       “exchange” : “{Exchange name to reply}”
       “queue” : “{Queue name to reply}”
       “message” : { 
-          “orderId” : {orderId}”
+          “orderId” : "{orderId}”,
+          "userId" : "{userId}",
+          "amount" : {amount}
       }
 
   }
@@ -524,12 +528,12 @@ Mensaje
 
 # <a name='rabbitmq_post'></a> RabbitMQ_POST
 
-## <a name=''></a> 
+## <a name='informar-cambio-de-nivel'></a> Informar Cambio de Nivel
 [Back to top](#top)
 
-<p>Enviá de mensajes level-updated desde cart. Informa el Nivel del Usuario</p>
+<p>Enviá de mensajes level-updated. Informa el Nivel del Usuario</p>
 
-	DIRECT auth/level-data
+	DIRECT rewards/level-data
 
 
 
@@ -543,8 +547,8 @@ Mensaje
 {
   "type": "level-updated",
   "message" : {
-      "levelId": "{levelId}",
-      "score": {score}
+      "userId": "{userId}",
+      "levelId": "{levelId}"
   }
 }
 ```

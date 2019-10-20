@@ -219,7 +219,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Respuesta",
-          "content": "HTTP/1.1 200 OK\n{\n    “score” : “{score}”,\n    “levelName” : “{levelName}” \n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"_id\":\":userId\"\n    “score” : “{score}”,\n    “levelName” : “{levelName}” \n}",
           "type": "json"
         }
       ]
@@ -361,33 +361,33 @@ define({ "api": [
   },
   {
     "type": "direct",
-    "url": "catalog/order-placed",
+    "url": "order/order-payed",
     "title": "Acreditar Puntos",
     "group": "RabbitMQ_GET",
-    "description": "<p>Escucha de mensajes order-placed desde order. Acredita Puntos</p>",
+    "description": "<p>Escucha de mensajes order-payed desde order. Acredita Puntos</p>",
     "examples": [
       {
         "title": "Mensaje",
-        "content": "{\n      “type” : “order-placed”,\n      “exchange” : “{Exchange name to reply}”\n      “queue” : “{Queue name to reply}”\n      “message” : { \n          “orderId” : {orderId}”\n      }\n\n  }",
+        "content": "{\n      “type” : “order-payed\",\n      “exchange” : “{Exchange name to reply}”\n      “queue” : “{Queue name to reply}”\n      “message” : { \n          “orderId” : \"{orderId}”,\n          \"userId\" : \"{userId}\",\n          \"amount\" : {amount}\n      }\n\n  }",
         "type": "json"
       }
     ],
     "version": "0.0.0",
     "filename": "./app/gateways/rabbit_service.py",
     "groupTitle": "RabbitMQ_GET",
-    "name": "DirectCatalogOrderPlaced"
+    "name": "DirectOrderOrderPayed"
   },
   {
     "type": "direct",
-    "url": "auth/level-data",
-    "title": "",
+    "url": "rewards/level-data",
+    "title": "Informar Cambio de Nivel",
     "group": "RabbitMQ_POST",
-    "description": "<p>Enviá de mensajes level-updated desde cart. Informa el Nivel del Usuario</p>",
+    "description": "<p>Enviá de mensajes level-updated. Informa el Nivel del Usuario</p>",
     "success": {
       "examples": [
         {
           "title": "Mensaje",
-          "content": "{\n  \"type\": \"level-updated\",\n  \"message\" : {\n      \"levelId\": \"{levelId}\",\n      \"score\": {score}\n  }\n}",
+          "content": "{\n  \"type\": \"level-updated\",\n  \"message\" : {\n      \"userId\": \"{userId}\",\n      \"levelId\": \"{levelId}\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -395,7 +395,7 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "./app/gateways/rabbit_service.py",
     "groupTitle": "RabbitMQ_POST",
-    "name": "DirectAuthLevelData"
+    "name": "DirectRewardsLevelData"
   },
   {
     "success": {

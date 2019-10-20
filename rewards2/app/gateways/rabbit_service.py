@@ -114,7 +114,7 @@ def listenOrder():
     """
     order-payed : Es una validación solicitada por Rewards para validar si hay una nueva orden pagada para acreditar los puntos
 
-    @api {direct} catalog/order-payed Acreditar Puntos
+    @api {direct} order/order-payed Acreditar Puntos
 
     @apiGroup RabbitMQ GET
 
@@ -183,11 +183,11 @@ def sendLevelNotice (userId, levelId):
     level-data : Es una notificación al perfil del usuario informando el estado de su puntaje y su estado actual
 
 
-    @api {direct} auth/level-data 
+    @api {direct} rewards/level-data Informar Cambio de Nivel
 
     @apiGroup RabbitMQ POST
 
-    @apiDescription Enviá de mensajes level-updated desde cart. Informa el Nivel del Usuario
+    @apiDescription Enviá de mensajes level-updated. Informa el Nivel del Usuario
 
     @apiSuccessExample {json} Mensaje
       {

@@ -3,6 +3,7 @@
 import datetime
 import pymongo
 import json
+import app.gateways.rabbit_service as rabbit
 import app.domain.articles.crud_service as crud
 import app.utils.errors as error
 import app.utils.mongo as db
@@ -51,7 +52,7 @@ def getScore(userId):
     except Exception:
         raise error.InvalidArgument("_id", "Invalid object id")
 
-"def manageScore(userID, params):"
+
 def manageScore(userID, params  ):
     """
     Gestionar puntaje. \n
@@ -225,7 +226,6 @@ def deleteLevel(levelId):
     @apiGroup Niveles
 
     @apiUse AuthHeader
-print(int(i["minValue"])<=int(score))
     @apiSuccessExample {json} 200 Respuesta
         HTTP/1.1 200 OK
 
@@ -291,8 +291,10 @@ def checkLevel(userId):
             if(int(i["maxValue"])>score):
                 levelId = str(i["_id"])
                 db.scores.find_one_and_update({'userId':userId},{'$set':{'level':levelId}})
+                rabbit.sendLevelNotice(userId, levelId)
 
 def updateScore(userId, amount):
+ 
     rawValuePoint = db.scores.find_one({"name":"cotizacion"})
     valuePoint=float(rawValuePoint["pointValue"])
     userScores=db.scores.find_one({'userId':userId})
