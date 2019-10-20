@@ -6,7 +6,7 @@ import traceback
 import pika
 
 import app.domain.articles.crud_service as crud
-"import app.domain.articles.rest_validations as articleValidation"
+import app.domain.articles.rest_validations as articleValidation
 import app.utils.config as config
 import app.utils.json_serializer as json
 import app.utils.security as security
@@ -70,7 +70,7 @@ def initRewards():
     """
     Inicializa RabbitMQ para escuchar eventos de order específicos.
     """
-    catalogConsumer = threading.Thread(target=listenCatalog)
+    catalogConsumer = threading.Thread(target=listenOrder)
     catalogConsumer.start()
 
 
@@ -132,21 +132,55 @@ def listenOrder():
         }
     """
     
-    EXCHANGE = "rewards"
-    QUEUE = "rewards"
     
-def listenCatalog():
     try:
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=config.get_rabbit_server_url()))
+        channel = connection.channel()
+        channel.exchange_declare(exchange="sell_flow",exchange_type='topic')
         
-        print("RabbitMQ Catalog conectado")
+        EXCHANGE = "sell_flow"
+        
+        """
+        ESTO ES DE listenCatalog(), lo reemplazo para probar si el 
+        metodo de fanout me sirve más
+        channel.exchange_declare(exchange=EXCHANGE, exchange_type='direct')
+
+        channel.queue_declare(queue=QUEUE)
+
+        channel.queue_bind(queue=QUEUE, exchange=EXCHANGE, routing_key=QUEUE)
+        """
+        result = channel.queue_declare('', exclusive=True)
+        queue_name = result.method.queue
+        queue=queue_name
+        binding_key="order_payed"
+        channel.queue_bind(exchange=EXCHANGE, queue=queue_name, routing_key=binding_key)
+
+        
+        def callback(ch, method, properties, body):
+            print(" [x] %r:%r" % (method.routing_key, body))
+            event = json.body_to_dic(body.decode('utf-8'))
+            """if(len(validator.validateSchema(EVENT_CALLBACK, event)) > 0):
+                return
+            """
+            if(event["type"]=="order-payed"):
+                message = event["message"]
+                exchange = event["exchange"]
+                queue = event["queue"]
+                orderId = message["orderId"]
+                userId = message["userId"]
+                amount = message["amount"]
+                print("RabbitMQ order-placed orderId:",orderId,"userId: ",userId, " amount= $",amount)
+                crud.updateScore(userId,amount)
+                print("Score Updated Succesfully")
+
+        print("RabbitMQ ORDER CONECTADOO")
+        channel.basic_consume(queue, callback, consumer_tag=queue, auto_ack=True)
+        channel.start_consuming()
 
     except Exception:
         traceback.print_exc()
         print("RabbitMQ Catalog desconectado, intentando reconectar en 10'")
         
-    EXCHANGE = "catalog"
-    QUEUE = "catalog"
-
 
 
 def sendLevelNotice (exchange, queue, levelId, score):
