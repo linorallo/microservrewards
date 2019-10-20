@@ -17,6 +17,7 @@ def init(app):
     @app.route('/v1/rewards/levels', methods=['GET'])
     def getLevels():
         try:
+            security.validateAdminRole(flask.request.headers.get("Authorization"))
             return json.dic_to_json(crud.getLevels())
         except Exception as err:
             return errors.handleError(err)

@@ -3,6 +3,7 @@
 import datetime
 import pymongo
 import json
+import app.domain.articles.crud_service as crud
 import app.utils.errors as error
 import app.utils.mongo as db
 import bson.objectid as bson
@@ -25,6 +26,7 @@ def getScore(userId):
     @apiSuccessExample {json} Respuesta
         HTTP/1.1 200 OK
         {
+            "_id":":userId"
             “score” : “{score}”,
             “levelName” : “{levelName}” 
         }
@@ -251,9 +253,28 @@ def getLevels():
 
     """
     results=db.levels.count()
-    results=db.levels.find_one({}) 
-    'Esto funciona pero hay q lograr traer todas las entradas como un array'
-    
+    results=list(db.levels.find({})) 
     if(not results):
         raise error("el find no funciona")
     return results
+
+
+def checkLevel(userId):
+    levels = getLevels()
+    score = int(getScore(userId)["score"])
+    for i in levels:
+        if(int(i["minValue"])<score):
+            if(int(i["maxValue"])>score):
+                levelId = i["_id"]
+                db.scores.find_one_and_update({'userId':userId},{'$set':{'level':levelId}})
+                print("Level updated")
+
+def updateScore(userId, amount):
+    rawValuePoint = db.scores.find_one({"name":"cotizacion"})
+    valuePoint=float(rawValuePoint["pointValue"])
+    userScores=db.scores.find_one({'userId':userId})
+    print("USERSCORES=",userScores)
+    newScore=(amount/valuePoint)+float(userScores['score'])
+    print("newScore=",newScore)
+    db.scores.find_one_and_update({'userId':userId}, {'$set':{'score':int(newScore)}})
+    checkLevel(userId)
