@@ -112,21 +112,23 @@ def listenAuth():
 
 def listenOrder():
     """
-    order-placed : Es una validación solicitada por Rewards para validar si hay una nueva orden corndirmada para acreditar los puntos
+    order-payed : Es una validación solicitada por Rewards para validar si hay una nueva orden pagada para acreditar los puntos
 
-    @api {direct} catalog/order-placed Acreditar Puntos
+    @api {direct} catalog/order-payed Acreditar Puntos
 
     @apiGroup RabbitMQ GET
 
-    @apiDescription Escucha de mensajes order-placed desde order. Acredita Puntos
+    @apiDescription Escucha de mensajes order-payed desde order. Acredita Puntos
 
     @apiExample {json} Mensaje
       {
-            “type” : “order-placed”,
+            “type” : “order-payed",
             “exchange” : “{Exchange name to reply}”
             “queue” : “{Queue name to reply}”
             “message” : { 
-                “orderId” : {orderId}”
+                “orderId” : "{orderId}”,
+                "userId" : "{userId}",
+                "amount" : {amount}
             }
 
         }
@@ -139,16 +141,6 @@ def listenOrder():
         channel.exchange_declare(exchange="sell_flow",exchange_type='topic')
         
         EXCHANGE = "sell_flow"
-        
-        """
-        ESTO ES DE listenCatalog(), lo reemplazo para probar si el 
-        metodo de fanout me sirve más
-        channel.exchange_declare(exchange=EXCHANGE, exchange_type='direct')
-
-        channel.queue_declare(queue=QUEUE)
-
-        channel.queue_bind(queue=QUEUE, exchange=EXCHANGE, routing_key=QUEUE)
-        """
         result = channel.queue_declare('', exclusive=True)
         queue_name = result.method.queue
         queue=queue_name
@@ -173,17 +165,18 @@ def listenOrder():
                 crud.updateScore(userId,amount)
                 print("Score Updated Succesfully")
 
-        print("RabbitMQ ORDER CONECTADOO")
+        print("RabbitMQ Order Conectado")
         channel.basic_consume(queue, callback, consumer_tag=queue, auto_ack=True)
         channel.start_consuming()
 
     except Exception:
         traceback.print_exc()
-        print("RabbitMQ Catalog desconectado, intentando reconectar en 10'")
+        print("RabbitMQ Order desconectado")
         
 
 
-def sendLevelNotice (exchange, queue, levelId, score):
+def sendLevelNotice (userId, levelId):
+    print("entra a rabbit_service")
     """
     Envía notificacion a Auth (User si existise) para informar que hay un cambio en el nivel
 
@@ -200,50 +193,28 @@ def sendLevelNotice (exchange, queue, levelId, score):
       {
         "type": "level-updated",
         "message" : {
-            "levelId": "{levelId}",
-            "score": {score}
+            "userId": "{userId}",
+            "levelId": "{levelId}"
         }
       }
     """
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=config.get_rabbit_server_url()))
     channel = connection.channel()
-
-    channel.exchange_declare(exchange=exchange, exchange_type='direct')
-
-    channel.queue_declare(queue=queue)
-
+    exchange="rewards"
+    channel.exchange_declare(exchange="rewards",exchange_type='direct')
+    result = channel.queue_declare('', exclusive=True)
+    queue_name = result.method.queue
+    queue=queue_name
     message = {
-        "type": "score-data",
+        "type": "level-updated",
         "message": {
-            "score": score
+            "userId": userId,
+            "levelId": levelId
         }
     }
 
-    channel.basic_publish(exchange=exchange, routing_key=queue, body=json.dic_to_json(message))
+    channel.basic_publish(exchange=exchange, routing_key="level-update", body=json.dic_to_json(message))
 
     connection.close()
 
-    print("RabbitMQ Cart POST score-data rewardsId:%r , orderId:%r ", referenceId)
-
-
-def sendScoreData(exchange, queue, referenceId, userId, score):
-    
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=config.get_rabbit_server_url()))
-    channel = connection.channel()
-
-    channel.exchange_declare(exchange=exchange, exchange_type='direct')
-
-    channel.queue_declare(queue=queue)
-
-    message = {
-        "type": "score-data",
-        "message": {
-            "score": score
-        }
-    }
-
-    channel.basic_publish(exchange=exchange, routing_key=queue, body=json.dic_to_json(message))
-
-    connection.close()
-
-    print("RabbitMQ Cart POST score-data rewardsId:%r , orderId:%r ", referenceId)
+    print("RabbitMQ Cart POST level-updated uderId:%r , levelId:%r ")
