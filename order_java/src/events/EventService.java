@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.ValidationException;
-
+import application.RabbitController;;
 import events.schema.ArticleValidationEvent;
 import events.schema.Event;
 import events.schema.NewArticleValidationData;
@@ -66,6 +66,7 @@ public class EventService {
         EventRepository.getInstance().save(event);
 
         ProjectionService.getInstance().updateProjections(event);
+        RabbitController.sendOrderPayed(event);
         return event;
     }
 }

@@ -10,7 +10,6 @@ import events.schema.Event;
 import events.schema.NewArticleValidationData;
 import events.schema.NewPlaceData;
 import events.schema.PlaceEvent;
-import events.schema.PlaceEvent.Article;
 import security.TokenService;
 import utils.rabbit.DirectConsumer;
 import utils.rabbit.DirectPublisher;
@@ -139,6 +138,36 @@ public class RabbitController {
         TopicPublisher.publish("sell_flow", "order_placed", eventToSend);
     }
 
+    public static void  sendOrderPayed(Event event){
+        RabbitEvent eventToSend =new RabbitEvent();
+        eventToSend.type = "order-payed";
+        eventToSend.exchange = "order";
+        eventToSend.queue = "order";
+
+        eventToSend.message = new OrderPayedResponse(event.getOrderId().toHexString(),
+        event.getPayment().getUserId(), event.getPayment().getAmount());
+        TopicPublisher.publish("sell_flow", "order_payed", eventToSend);
+        System.out.println(eventToSend.toString());
+    }
+
+    private static class OrderPayedResponse{
+        @SerializedName("orderId")
+        public String orderId;
+        @SerializedName("userId")
+        public String userId;
+        @SerializedName("amount")
+        public double amount;
+
+        OrderPayedResponse(){
+
+        }
+
+        OrderPayedResponse(String orderId, String userId, double amount){
+            this.orderId = orderId;
+            this.userId = userId;
+            this.amount = amount;
+        }
+    }
     private static class OrderPlacedResponse {
         @SerializedName("orderId")
         public String orderId;
