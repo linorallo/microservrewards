@@ -37,9 +37,16 @@ def getScore(userId):
     try:
         
         result = db.scores.find_one({"_id": bson.ObjectId(userId)})
+        levelId =result["level"]
+        level = db.levels.find_one({"_id" : bson.ObjectId(levelId)})
+        resultReady = {
+            "_id":userId,
+            "score":result["score"],
+            "levelName":level["levelName"]
+        }                
         if (not result):
             raise error.InvalidArgument("_id", "Document does not exists")
-        return result
+        return resultReady
     
     except Exception:
         raise error.InvalidArgument("_id", "Invalid object id")
@@ -86,6 +93,7 @@ def manageScore(userID, params  ):
         if (not rawresults):
             raise error.InvalidArgument("_id", "Document does not exists")
         db.scores.find_one_and_update({'_id':bson.ObjectId(userID)},{'$set':{'score':int(updatedValue)}})
+        checkLevel(userID)
         return str(updatedValue)
     except Exception as err:
         raise err
@@ -217,7 +225,7 @@ def deleteLevel(levelId):
     @apiGroup Niveles
 
     @apiUse AuthHeader
-
+print(int(i["minValue"])<=int(score))
     @apiSuccessExample {json} 200 Respuesta
         HTTP/1.1 200 OK
 
@@ -252,29 +260,42 @@ def getLevels():
     @apiUse Errors
 
     """
-    results=db.levels.count()
-    results=list(db.levels.find({})) 
+    print(db.levels.count())
+    results=db.levels.find({})
+    levels={
+        'pointValue': db.scores.find_one({"name":"cotizacion"})["pointValue"],
+    }
+    for level in results:
+        levelName = level["levelName"]
+        minValue  = level['minValue']
+        maxValue = level['maxValue']
+        levelData={
+            'levelName' : levelName,
+            'minValue' : minValue,
+            'maxValue' : maxValue
+        }
+
+        levels[str(level['_id'])] = levelData
+    
     if(not results):
         raise error("el find no funciona")
-    return results
+    return levels
 
 
 def checkLevel(userId):
-    levels = getLevels()
+    levels = db.levels.find({})
     score = int(getScore(userId)["score"])
+    print(score)
     for i in levels:
-        if(int(i["minValue"])<score):
+        if(int(i["minValue"])<=int(score)):
             if(int(i["maxValue"])>score):
-                levelId = i["_id"]
+                levelId = str(i["_id"])
                 db.scores.find_one_and_update({'userId':userId},{'$set':{'level':levelId}})
-                print("Level updated")
 
 def updateScore(userId, amount):
     rawValuePoint = db.scores.find_one({"name":"cotizacion"})
     valuePoint=float(rawValuePoint["pointValue"])
     userScores=db.scores.find_one({'userId':userId})
-    print("USERSCORES=",userScores)
     newScore=(amount/valuePoint)+float(userScores['score'])
-    print("newScore=",newScore)
     db.scores.find_one_and_update({'userId':userId}, {'$set':{'score':int(newScore)}})
     checkLevel(userId)
