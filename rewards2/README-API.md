@@ -52,8 +52,8 @@ HTTP/1.1 200 OK
     “pointValue” : “{pointValue}”,
 “{levelId}” : {
         “levelName” : “{levelName}”,
-    “minValue” : “{minValue}”,
-    “maxValue” : “{maxValue}”
+    “minPointValue” : “{minPointValue}”,
+    “maxPointValue” : “{maxPointValue}”
     }
 }
 ```
@@ -107,8 +107,8 @@ Body
 ```
 {
     “levelName” : “{levelName}”,
-    “minValue” : “{minValue}”,
-    “maxValue” : “{maxValue}”
+    “minPointValue” : “{minPointValue}”,
+    “maxPointValue” : “{maxPointValue}”
 
 }
 ```
@@ -128,8 +128,8 @@ HTTP/1.1 200 OK
 {
     “levelId” : “{levelId}”,
     “levelName” : “{levelName}”,
-“minValue” : “{minValue}”,
-“maxValue” : “{maxValue}”
+“minPointalue” : “{minPointValue}”,
+“maxPointValue” : “{maxPointValue}”
 
 }
 ```
@@ -172,7 +172,7 @@ HTTP/1.1 500 Server Error
 
 
 
-	DELETE /rewards/:levelId
+	DELETE /rewards/levels/:levelId
 
 
 
@@ -241,9 +241,9 @@ Body
 
 ```
 {
-    "levelID" :"{levelID}",
-    “minValue” : “{minValue}”,
-    “maxValue” : “{maxValue}”
+    "levelName" :"{levelName}",
+    “minPointValue” : “{minPointValue}”,
+    “maxPointValue” : “{maxPointValue}”
 
 }
 ```
@@ -373,7 +373,7 @@ HTTP/1.1 500 Server Error
 
 
 
-	GET /v1/rewards/:userId/manage
+	POST /v1/rewards/:userId/manage
 
 
 
@@ -437,7 +437,7 @@ HTTP/1.1 500 Server Error
 
 
 
-	GET /v1/rewards/update-points-value
+	POST /v1/rewards/update-points-value
 
 
 

@@ -61,7 +61,7 @@ def manageScore(userID, params  ):
     return dict<propiedad, valor> Usuario\n
     """
     """
-    @api {get} /v1/rewards/:userId/manage Gestionar Puntaje
+    @api {post} /v1/rewards/:userId/manage Gestionar Puntaje
     @apiName Gestionar Puntaje
     @apiGroup Puntaje
 
@@ -80,8 +80,6 @@ def manageScore(userID, params  ):
     """
     try:
         rawresults = db.scores.find_one({"_id":bson.ObjectId(userID)})
-        "db.scores.find_one_and_update({'_id':bson.ObjectId(userID)})"
-        "result=json.loads(rawresults)"
         if(params["action"]=="SUMAR"):
             updatedValue=int(rawresults['score'])+int(params['valor'])
         else:
@@ -106,7 +104,7 @@ def updateValuePoint(params):
     return dict<propiedad, valor> Valor Puntaje\n
     """
     """
-    @api {get} /v1/rewards/update-points-value Modificar Valor de Puntaje
+    @api {post} /v1/rewards/update-points-value Modificar Valor de Puntaje
     @apiName Valor de Puntaje
     @apiGroup Puntaje
 
@@ -147,8 +145,8 @@ def createLevel(params):
     @apiExample {json} Body
         {
             “levelName” : “{levelName}”,
-            “minValue” : “{minValue}”,
-            “maxValue” : “{maxValue}”
+            “minPointValue” : “{minPointValue}”,
+            “maxPointValue” : “{maxPointValue}”
 
         }
 
@@ -157,8 +155,8 @@ def createLevel(params):
         {
             “levelId” : “{levelId}”,
             “levelName” : “{levelName}”,
-	        “minValue” : “{minValue}”,
-	        “maxValue” : “{maxValue}”
+	        “minPointalue” : “{minPointValue}”,
+	        “maxPointValue” : “{maxPointValue}”
 
         }
 
@@ -169,6 +167,7 @@ def createLevel(params):
         db.levels.insert_one(params)
         name=params['levelName']
         return db.levels.find_one({'levelName':name})
+        
     except Exception as err:
         raise err
 
@@ -187,9 +186,9 @@ def modifyLevel(levelId, params):
 
     @apiExample {json} Body
         {
-            "levelID" :"{levelID}",
-            “minValue” : “{minValue}”,
-            “maxValue” : “{maxValue}”
+            "levelName" :"{levelName}",
+            “minPointValue” : “{minPointValue}”,
+            “maxPointValue” : “{maxPointValue}”
 
         }
 
@@ -207,8 +206,15 @@ def modifyLevel(levelId, params):
 
     """
     try:
-        db.levels.find_one_and_update({"_id":bson.ObjectId(levelId)},{'$set':{'levelName':params['levelName'],'minValue':params['minValue'],'maxValue':params['maxValue']}})
-        return 'Level modified succesfully'    
+        db.levels.find_one_and_update({"_id":bson.ObjectId(levelId)},{'$set':{'levelName':params['levelName'],'minPointValue':params['minPointValue'],'maxPointValue':params['maxPointValue']}})
+        level = db.levels.find_one({"_id":bson.ObjectId(levelId)})
+        message = {
+            "levelId" : levelId,
+            "levelName" : level['levelName'],
+            'minPointValue' : level['minPointValue'],
+            'maxPointValue' : level['maxPointValue']
+        }
+        return message 
     except Exception as err:
         raise err
 
@@ -221,7 +227,7 @@ def deleteLevel(levelId):
     """
     Elimina un nivel : delLevel(levelId: string)
 
-    @api {delete} /rewards/:levelId Eliminar Nivel
+    @api {delete} /rewards/levels/:levelId Eliminar Nivel
     @apiName Eliminar Nivel
     @apiGroup Niveles
 
@@ -252,8 +258,8 @@ def getLevels():
             “pointValue” : “{pointValue}”,
 	        “{levelId}” : {
                 “levelName” : “{levelName}”,
-	            “minValue” : “{minValue}”,
-	            “maxValue” : “{maxValue}”
+	            “minPointValue” : “{minPointValue}”,
+	            “maxPointValue” : “{maxPointValue}”
             }
         }
 
@@ -267,12 +273,12 @@ def getLevels():
     }
     for level in results:
         levelName = level["levelName"]
-        minValue  = level['minValue']
-        maxValue = level['maxValue']
+        minPointValue  = level['minPointValue']
+        maxPointValue = level['maxPointValue']
         levelData={
             'levelName' : levelName,
-            'minValue' : minValue,
-            'maxValue' : maxValue
+            'minPointValue' : minPointValue,
+            'maxPointValue' : maxPointValue
         }
 
         levels[str(level['_id'])] = levelData
@@ -287,14 +293,13 @@ def checkLevel(userId):
     score = int(getScore(userId)["score"])
     print(score)
     for i in levels:
-        if(int(i["minValue"])<=int(score)):
-            if(int(i["maxValue"])>score):
+        if(int(i["minPointValue"])<=int(score)):
+            if(int(i["maxPointValue"])>score):
                 levelId = str(i["_id"])
                 db.scores.find_one_and_update({'userId':userId},{'$set':{'level':levelId}})
                 rabbit.sendLevelNotice(userId, levelId)
 
 def updateScore(userId, amount):
- 
     rawValuePoint = db.scores.find_one({"name":"cotizacion"})
     valuePoint=float(rawValuePoint["pointValue"])
     userScores=db.scores.find_one({'userId':userId})

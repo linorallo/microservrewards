@@ -26,33 +26,19 @@ def init(app):
     @app.route('/v1/rewards/<userId>', methods=['GET'])
     def getScore(userId):
             try:
+                security.validateAdminRole(flask.request.headers.get("Authorization"))
                 return json.dic_to_json(crud.getScore(userId))
             except Exception as err:
                 return errors.handleError(err)
-    """         try:
-            security.validateAdminRole(flask.request.headers.get("Authorization"))
 
-            params = json.body_to_dic(flask.request.data)
-
-            params = restValidator.validateAddArticleParams(params)
-
-            result = crud.addArticle(params)
-
-            return json.dic_to_json(result)
-        except Exception as err:
-            return errors.handleError(err)
-    """
-    @app.route('/v1/rewards/<userId>/manage', methods=['POST'])
-    def manageScore(userId):
+    @app.route('/v1/rewards/manage', methods=['GET'])
+    def manageScore():
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
-
             params = json.body_to_dic(flask.request.data)
-
+            userId = params['userId']
             result = crud.manageScore(userId, params)
-            "result = crud.manageScore(userId)"
             return result
-            "return json.dic_to_json(result)"
         except Exception as err:
             return errors.handleError(err)
 
@@ -82,11 +68,10 @@ def init(app):
         except Exception as err:
             return errors.handleError(err)
 
-    @app.route('/v1/rewards/levels/<levelId>/delete-level', methods=['GET'])
+    @app.route('/v1/rewards/levels/<levelId>', methods=['DELETE'])
     def deleteLevel(levelId):
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
-
             result = crud.deleteLevel(levelId)
 
             return json.dic_to_json(result)
@@ -97,11 +82,7 @@ def init(app):
     def modifyLevel(levelId):
         try:
             security.validateAdminRole(flask.request.headers.get("Authorization"))
-
             params = json.body_to_dic(flask.request.data)
-
-            'params = restValidator.validateEditLevelParams(params)'
-
             result = crud.modifyLevel(levelId, params)
 
             return json.dic_to_json(result)
@@ -112,22 +93,5 @@ def init(app):
     def getArticle(articleId):
         try:
             return json.dic_to_json(crud.getArticle(articleId))
-        except Exception as err:
-            return errors.handleError(err)
-
-    
-    @app.route('/v1/articles/<articleId>', methods=['DELETE'])
-    def delArticle(articleId):
-        try:
-            security.validateAdminRole(flask.request.headers.get("Authorization"))
-            crud.delArticle(articleId)
-            return ""
-        except Exception as err:
-            return errors.handleError(err)
-
-    @app.route('/v1/articles/search/<criteria>', methods=['GET'])
-    def searchArticles(criteria):
-        try:
-            return json.dic_to_json(find.searchArticles(criteria))
         except Exception as err:
             return errors.handleError(err)

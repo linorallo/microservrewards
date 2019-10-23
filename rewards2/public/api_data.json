@@ -9,7 +9,7 @@
       "examples": [
         {
           "title": "Respuesta",
-          "content": "HTTP/1.1 200 OK\n{\n    “pointValue” : “{pointValue}”,\n“{levelId}” : {\n        “levelName” : “{levelName}”,\n    “minValue” : “{minValue}”,\n    “maxValue” : “{maxValue}”\n    }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    “pointValue” : “{pointValue}”,\n“{levelId}” : {\n        “levelName” : “{levelName}”,\n    “minPointValue” : “{minPointValue}”,\n    “maxPointValue” : “{maxPointValue}”\n    }\n}",
           "type": "json"
         }
       ]
@@ -58,7 +58,7 @@
     "examples": [
       {
         "title": "Body",
-        "content": "{\n    “levelName” : “{levelName}”,\n    “minValue” : “{minValue}”,\n    “maxValue” : “{maxValue}”\n\n}",
+        "content": "{\n    “levelName” : “{levelName}”,\n    “minPointValue” : “{minPointValue}”,\n    “maxPointValue” : “{maxPointValue}”\n\n}",
         "type": "json"
       },
       {
@@ -71,7 +71,7 @@
       "examples": [
         {
           "title": "Respuesta",
-          "content": "HTTP/1.1 200 OK\n{\n    “levelId” : “{levelId}”,\n    “levelName” : “{levelName}”,\n“minValue” : “{minValue}”,\n“maxValue” : “{maxValue}”\n\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    “levelId” : “{levelId}”,\n    “levelName” : “{levelName}”,\n“minPointalue” : “{minPointValue}”,\n“maxPointValue” : “{maxPointValue}”\n\n}",
           "type": "json"
         }
       ]
@@ -106,7 +106,7 @@
   },
   {
     "type": "delete",
-    "url": "/rewards/:levelId",
+    "url": "/rewards/levels/:levelId",
     "title": "Eliminar Nivel",
     "name": "Eliminar_Nivel",
     "group": "Niveles",
@@ -163,7 +163,7 @@
     "examples": [
       {
         "title": "Body",
-        "content": "{\n    \"levelID\" :\"{levelID}\",\n    “minValue” : “{minValue}”,\n    “maxValue” : “{maxValue}”\n\n}",
+        "content": "{\n    \"levelName\" :\"{levelName}\",\n    “minPointValue” : “{minPointValue}”,\n    “maxPointValue” : “{maxPointValue}”\n\n}",
         "type": "json"
       },
       {
@@ -260,7 +260,7 @@
     }
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/v1/rewards/:userId/manage",
     "title": "Gestionar Puntaje",
     "name": "Gestionar_Puntaje",
@@ -310,7 +310,7 @@
     }
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/v1/rewards/update-points-value",
     "title": "Modificar Valor de Puntaje",
     "name": "Valor_de_Puntaje",
@@ -396,33 +396,5 @@
     "filename": "./app/gateways/rabbit_service.py",
     "groupTitle": "RabbitMQ_POST",
     "name": "DirectRewardsLevelData"
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "./public/main.js",
-    "group": "_home_lino_UTN_ArquitecturaMicroservicios_microservrewards_rewards2_public_main_js",
-    "groupTitle": "_home_lino_UTN_ArquitecturaMicroservicios_microservrewards_rewards2_public_main_js",
-    "name": ""
   }
 ]
